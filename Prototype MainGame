@@ -1,0 +1,113 @@
+import java.util.Random;
+
+public class MainGame {
+	
+	//Static variables for pot and random so they can readily be accessed
+	//Static keyword used in main method because there is only ever one instance of the main
+	//Static means the variable is shared by all members of the class
+	
+	static int pot;
+	static Random rand = new Random();
+	
+	public static void main(String[] args) {
+	
+		System.out.println("Test 1;");
+		
+		//Establish variables
+		int numPlayers = 4, numStartGelt = 10; //placeholder values
+		
+		int remainingPlayers = numPlayers; //We need to count down to 1, the last man standing
+		
+		
+		//Set up game
+			//Later on, this will ask for the number of players and starting gelt
+		
+		
+		//Prepare entities, instantiate them and make sure they exist
+		pot = 0;
+		GeltHolder[] players = new GeltHolder[numPlayers];
+		
+		
+		for (GeltHolder p: players) {
+			p = new GeltHolder(numStartGelt); //Set every player's gelt count to the starting amount
+			anteUp(p); //Each player puts 1 gelt in the pot
+		}
+		
+						System.out.println("Test 2: " + pot);
+		
+		//Start the round
+		
+
+		while (remainingPlayers > 1) { //Play until only one remains
+			
+			for (GeltHolder p: players) { //Each player goes during the round
+				
+				if (p.gelt > 0) { //Only players with gelt get to play, everyone else is out
+					
+					spin(p); //Spin the dreidel!
+						//This method handles adjusting the gelt held by both the player and the pot
+				
+					if (p.gelt <= 0) { //Eliminate players with no gelt
+						remainingPlayers--;
+					}
+					
+					checkPot(players); //Check the pot after every round
+						//Remaining players each put one gelt in the pot if only 1 or 0 gelt remain in the pot
+					
+				}
+				
+			}
+			
+		}
+		
+		
+		
+		
+		System.out.println("Test 3: " + pot);
+		
+		
+		/* Things we gotta do:
+		 * Ignore players with 0 gelt
+		 * Whenever the pot hits 0 or 1 gelt, every player puts one gelt in the pot (again, ignore 0 gelt players)
+		 * Print to a txt document
+		 */
+		
+	}
+	
+	public static void checkPot(GeltHolder[] players) {
+		
+		if (pot <= 1) {
+			for (GeltHolder q: players) {
+				anteUp(q);
+			}
+		}
+		
+	}
+	
+	public static void spin(GeltHolder p) {
+		
+		int roll = rand.nextInt(4) + 1;
+		
+		switch (roll) {
+			case 1:
+				p.gelt--; pot++; //Shin, shin, put one in!
+			case 2:
+				p.gelt += Math.floorDiv(pot, 2); //Hey, get half the gelt in the pot (rounded down)
+				pot -= Math.floorDiv(pot, 2);
+			case 3:
+				p.gelt += pot; //Gimel, get ALL the gelt in the pot
+				pot = 0;
+			case 4:
+				//Nun, nothing happens
+		}
+		
+	}
+	
+	public static void anteUp(GeltHolder p) {
+		
+		if (p.gelt > 0) {
+			p.gelt--; pot++;
+		}
+	}
+	
+}
