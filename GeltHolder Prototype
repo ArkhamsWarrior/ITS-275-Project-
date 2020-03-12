@@ -1,0 +1,16 @@
+public class GeltHolder {
+
+	public int gelt;
+	public String name;
+	
+	public GeltHolder(int i) {
+		gelt = i;
+	}
+
+	public GeltHolder() {
+		// Auto-generated constructor stub
+	}
+
+	//Method to write player action to txt file
+	
+}
