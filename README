@@ -1,0 +1,3 @@
+We are attempting to create a Driedel Simulator to simulate games of driedel with arbitrary size
+This will help mathematicians research the game more effectively
+Abstract "GeltHolder" will be the blueprint for the Player class and the Pot class.
