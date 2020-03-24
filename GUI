@@ -3,10 +3,10 @@ package DreidelManX;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -31,15 +31,18 @@ public class Dreidel_Window extends Application{ //Include option to select numb
 		TextField gamesTXF = new TextField();
 		//Submit button
 		Button submit = new Button("Submit");
+		submit.setPrefWidth(100);
 		
 		//VBox-es
 		VBox labelsInBox = new VBox(32, playersLBL, geltLBL, gamesLBL);
-		VBox fieldsInBox = new VBox(20, playersTXF, geltTXF, gamesTXF);
+		VBox fieldsInBox = new VBox(20, playersTXF, geltTXF, gamesTXF, submit);
 		//Hbox-es
-		HBox playersHBOX = new HBox(40, labelsInBox, fieldsInBox);
+		HBox mainHBOX = new HBox(40, labelsInBox, fieldsInBox);
 		
 		//Create scene
-		Scene scene = new Scene(playersHBOX, 400, 300);
+		mainHBOX.setPadding(new Insets(50));
+		mainHBOX.setAlignment(Pos.CENTER);
+		Scene scene = new Scene(mainHBOX, 500, 300);
 		
 		//Set the stage
 		primaryStage.setScene(scene);
