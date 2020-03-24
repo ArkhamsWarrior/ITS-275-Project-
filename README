@@ -1,3 +1,23 @@
 We are attempting to create a Driedel Simulator to simulate games of driedel with arbitrary size
 This will help mathematicians research the game more effectively
 Abstract "GeltHolder" will be the blueprint for the Player class and the Pot class.
+
+NEW FEATURE: Specify a number of games to simulate on the GUI
+  I'm thinking it could work like this:
+
+There is a class which actually runs the game (I'll need to work more on this, we'll call it "MainGame"for now)
+3 arguments are passed to MainGame- Players, Starting Gelt, and Number of Games to Simulate*
+MainGame uses these to simulate / run the games
+
+*- We could instead pass the other two arguments to MainHame, and use Number of Games to loop in the GUI method?
+
+Objectives:
+  Make GUI look pretty
+  Sanitize input in the GUI
+  
+  Create functional looping simulator
+    This "MainGame" method hasn't been started yet, but the logic for random spins is completed
+  
+  Make sure each action is printed to a .txt file
+    Consult: https://www.homeandlearn.co.uk/java/write_to_textfile.html
+  Make sure text files saved are distinct
