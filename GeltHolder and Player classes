@@ -1,0 +1,24 @@
+public abstract class GeltHolder {
+
+	int gelt;
+	
+	String name;
+	
+	public abstract void writeResults();
+	
+}
+
+
+//
+
+public class Player extends GeltHolder{
+
+	
+	
+	
+	@Override
+	public void writeResults() {
+		
+	}
+	
+}
