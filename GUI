@@ -18,6 +18,9 @@ public class Dreidel_Window extends Application{ //Include option to select numb
     	launch(args); //Returns when the application ends
     }
 
+	Label output;
+	TextField playersTXF, geltTXF, gamesTXF;
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
@@ -25,30 +28,60 @@ public class Dreidel_Window extends Application{ //Include option to select numb
 		Label playersLBL = new Label("Number of Players:");
 		Label geltLBL = new Label("Number of Gelt:");
 		Label gamesLBL = new Label("Number of Games:");
+		output = new Label("Please input integers and press the button.");
 		//Declare input boxes
-		TextField playersTXF = new TextField();
-		TextField geltTXF = new TextField();
-		TextField gamesTXF = new TextField();
+		playersTXF = new TextField(); geltTXF = new TextField(); gamesTXF = new TextField();
 		//Submit button
 		Button submit = new Button("Submit");
-		submit.setPrefWidth(100);
+		submit.setPrefWidth(200);
+		submit.setOnAction(e ->
+			sanitize());
 		
 		//VBox-es
 		VBox labelsInBox = new VBox(32, playersLBL, geltLBL, gamesLBL);
-		VBox fieldsInBox = new VBox(20, playersTXF, geltTXF, gamesTXF, submit);
+		VBox fieldsInBox = new VBox(20, playersTXF, geltTXF, gamesTXF);
 		//Hbox-es
-		HBox mainHBOX = new HBox(40, labelsInBox, fieldsInBox);
+		HBox parallelHBOX = new HBox(40, labelsInBox, fieldsInBox);
+		parallelHBOX.setAlignment(Pos.CENTER); //Necessary to make sure stacks aren't to the left edge
+		//Main box
+		VBox mainBox = new VBox(25, parallelHBOX, submit, output);
+		mainBox.setAlignment(Pos.CENTER);
+		mainBox.setPadding(new Insets(50));
 		
 		//Create scene
-		mainHBOX.setPadding(new Insets(50));
-		mainHBOX.setAlignment(Pos.CENTER);
-		Scene scene = new Scene(mainHBOX, 500, 300);
+		Scene scene = new Scene(mainBox, 500, 300);
 		
 		//Set the stage
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Dreidel Man X");
 		primaryStage.show();
 		
+	}
+	
+	public void sanitize() {
+		
+		String a, b, c;
+		a = playersTXF.getText();
+		b = geltTXF.getText();
+		c = gamesTXF.getText();
+		
+		int x, y, z;
+		
+		try {
+			x = Integer.parseInt(a);
+			y = Integer.parseInt(b);
+			z = Integer.parseInt(c);
+			sendInput(x, y, z);
+			output.setText("Valid Input");
+		}
+		catch (NumberFormatException e) {
+			output.setText("Invalid input");
+		}
+		
+	}
+	
+	public void sendInput(int x, int y, int z) {
+		//Somehow start the game from here
 	}
 	
 }
