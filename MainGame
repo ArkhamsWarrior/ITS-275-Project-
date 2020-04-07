@@ -23,6 +23,8 @@ public class MainGame {
 	static Pot pot;
 	static int numRemainingPlayers;
 	
+	static Player[] players;
+	
 	public static void main(String[] Args) throws IOException{
 		
 		FileWriter write = new FileWriter("uno.txt", true);
@@ -36,18 +38,17 @@ public class MainGame {
 		int startGelt = 10;
 		numRemainingPlayers = numPlayers; //System.out.print(numRemainingPlayers);
 		pot = new Pot(); //System.out.println(pot.gelt);
-		
-		Player[] players = new Player[numPlayers];
-		
+		players = new Player[numPlayers];
+
 		for (int i = 0; i < players.length; i++) {
 			players[i] = new Player(startGelt);
 			players[i].name = "Player " + (i + 1); //System.out.println(players[i].name);
 		}
 		
-		anteUp(players);
+		anteUp();
 		
 		//ROLLING
-		
+		gameRound();
 		
 		
 		/* Step 1: Every player antes Up
@@ -74,11 +75,18 @@ public class MainGame {
 		System.out.println(numRemainingPlayers);
 	}
 	
-	public static void gameRound(Player[] players) {
+	public static void gameRound() {
 	
-		for (int i = 0; i < players.length; i++) {
+		for (int i = 0; i < players.length; i++) { //For each player
 			
+			spinPlayer(players[i]); //Spin
+			//System.out.println(players[i].name + " now has " + players[i].gelt + " gelt."); //Test message
 			
+			if (pot.gelt <= 0) { //Ante up if pot is empty
+				System.out.println("Pot is empty!");
+				anteUp();
+				System.out.println("Everyone puts one in, the pot now has " + pot.gelt + " gelt");
+			}
 			
 			
 		}
@@ -92,22 +100,39 @@ public class MainGame {
 	public static void spinPlayer(Player p) {
 		
 		int roll = rng.nextInt(4) + 1;
+		String result = "SHIN"; //System.out.println(roll);
 		
 		switch (roll) {
 			case 1:
-				p.gelt--; pot.gelt++; //Shin, shin, put one in!
+				result = "SHIN"; break;
 			case 2:
-				p.gelt += Math.floorDiv(pot.gelt, 2); //Hey, get half the gelt in the pot (rounded down)
-				pot.gelt -= Math.floorDiv(pot.gelt, 2);
+				result = "HEY"; break;
 			case 3:
+				result = "GIMEL"; break;
+			case 4:
+				result = "NUN"; break;
+		}
+		
+		switch (result) {
+			case "SHIN":
+				p.gelt--; pot.gelt++; //Shin, shin, put one in!
+				break;
+			case "HEY":
+				p.gelt += Math.floorDiv(pot.gelt, 2); //Hey, get half the gelt in the pot (rounded down)
+				pot.gelt -= Math.floorDiv(pot.gelt, 2); break;
+			case "GIMEL":
 				p.gelt += pot.gelt; //Gimel, get ALL the gelt in the pot
-				pot.gelt = 0;
-			case 4: //Nun, nothing happens
-				}
+				pot.gelt = 0; break;
+			case "NUN": break;
+				//Nun, nothing happens
+		}
+		
+		System.out.println(p.name + " lands on " + result + " and now has " + p.gelt + " gelt, " + 
+				"the pot has " + pot.gelt);
 		
 	}
 	
-	public static void anteUp(Player[] players) { //For each player, check if active. If active, drop a coin.
+	public static void anteUp() { //For each player, check if active. If active, drop a coin.
 		//Update active status of each player
 		for (int i = 0; i < players.length; i++)
 		{
@@ -117,21 +142,21 @@ public class MainGame {
 				pot.gelt++; //System.out.println(pot.gelt);
 			}
 			
-			players[i].update();
+			players[i].update(); checkEndGame();
 			
 		}
 		
 	}
 	
-	public static void checkEndGame(Player[] players) {
+	public static void checkEndGame() {
 		
 		if (numRemainingPlayers == 1) {
-			endGame(players);
+			endGame();
 		}
 		
 	}
 	
-	public static void endGame(Player[] players) {
+	public static void endGame() {
 		
 		for (int i=0; i < players.length; i++)
 	    {
@@ -139,6 +164,7 @@ public class MainGame {
 	        {
 	        	//Find the one active player and print a message saying they won, terminate loop
 	        	//How to terminate loop? Give "active" property to GeltHolder and use active property of pot?
+	        	System.out.println(players[i].name + " has won.");
 	        }
 	    }
 		
