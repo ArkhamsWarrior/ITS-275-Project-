@@ -1,0 +1,29 @@
+package DreidelManX;
+
+public class Player extends GeltHolder{
+
+	boolean active;
+	
+	public Player() {
+		this.active = true;
+	}
+	public Player(int i) {
+		this.gelt = i;
+		this.active = true;
+	}
+	
+	
+	@Override
+	public void writeResults() {
+		System.out.println("Results printed"); //Temporary until print to file is implemented
+	}
+	
+	public void update() {
+		
+		if (this.gelt <= 0) {
+			this.active = false;
+		}
+		
+	}
+	
+}
