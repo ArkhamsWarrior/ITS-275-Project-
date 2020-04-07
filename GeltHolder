@@ -1,0 +1,11 @@
+package DreidelManX;
+
+public abstract class GeltHolder {
+
+	int gelt;
+	
+	String name;
+	
+	public abstract void writeResults();
+	
+}
