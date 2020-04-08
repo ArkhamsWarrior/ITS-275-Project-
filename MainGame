@@ -21,22 +21,25 @@ public class MainGame {
 	
 	static Random rng = new Random();
 	static Pot pot;
-	static int numRemainingPlayers;
+	static boolean playing;
 	
 	static Player[] players;
+	static int roundNum;
+	
 	
 	public static void main(String[] Args) throws IOException{
 		
 		FileWriter write = new FileWriter("uno.txt", true);
 		
 		PrintWriter testPrint = new PrintWriter(write);
-		testPrint.println("Player 1 wins");
+		//testPrint.println("Player 1 wins");
 		testPrint.close();
 		
 		///SETTING UP
+		playing = true;
 		int numPlayers = 4;
 		int startGelt = 10;
-		numRemainingPlayers = numPlayers; //System.out.print(numRemainingPlayers);
+		Player.remaining = numPlayers; //System.out.print(numRemainingPlayers);
 		pot = new Pot(); //System.out.println(pot.gelt);
 		players = new Player[numPlayers];
 
@@ -47,8 +50,12 @@ public class MainGame {
 		
 		anteUp();
 		
-		//ROLLING
-		gameRound();
+		roundNum = 0;
+		
+		//ROLLING		
+		do {
+			gameRound();
+		} while (playing);
 		
 		
 		/* Step 1: Every player antes Up
@@ -70,27 +77,27 @@ public class MainGame {
 	}
 	
 	public static void test() {
-		System.out.println(numRemainingPlayers);
-		numRemainingPlayers--;
-		System.out.println(numRemainingPlayers);
+		System.out.println(Player.remaining);
+		Player.remaining--;
+		System.out.println(Player.remaining);
 	}
 	
 	public static void gameRound() {
 	
+		roundNum++; System.out.println("ROUND " + roundNum);
+		
 		for (int i = 0; i < players.length; i++) { //For each player
 			
-			spinPlayer(players[i]); //Spin
-			//System.out.println(players[i].name + " now has " + players[i].gelt + " gelt."); //Test message
-			
-			if (pot.gelt <= 0) { //Ante up if pot is empty
-				System.out.println("Pot is empty!");
-				anteUp();
-				System.out.println("Everyone puts one in, the pot now has " + pot.gelt + " gelt");
+			if (players[i].active) {
+				spinPlayer(players[i]); //Spin
+				//System.out.println(players[i].name + " now has " + players[i].gelt + " gelt."); //Test message
+				players[i].update(); checkEndGame();
 			}
-			
-			
+						
+			if (pot.gelt <= 0) { //Ante up if pot is empty
+				anteUp();
+			} //Updating and checking end game is done in Ante Up method
 		}
-		
 		//Check at end how many players are active at the end of any action which
 		//might reduce coins- this includes in anteUp
 		//Thus, in the event of a tie, the later player wins because their coins go in afterwards
@@ -140,17 +147,19 @@ public class MainGame {
 			{
 				players[i].gelt--;
 				pot.gelt++; //System.out.println(pot.gelt);
+				
+				players[i].update(); checkEndGame();
 			}
 			
-			players[i].update(); checkEndGame();
-			
 		}
+		
+		System.out.println("The pot is empty! Everyone puts one in, so the pot now has " + pot.gelt + " gelt");
 		
 	}
 	
 	public static void checkEndGame() {
 		
-		if (numRemainingPlayers == 1) {
+		if (Player.remaining == 1) {
 			endGame();
 		}
 		
@@ -167,6 +176,8 @@ public class MainGame {
 	        	System.out.println(players[i].name + " has won.");
 	        }
 	    }
+		
+		playing = false;
 		
 	}
 	
