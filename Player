@@ -3,6 +3,7 @@ package DreidelManX;
 public class Player extends GeltHolder{
 
 	boolean active;
+	static int remaining;
 	
 	public Player() {
 		this.active = true;
@@ -22,6 +23,10 @@ public class Player extends GeltHolder{
 		
 		if (this.gelt <= 0) {
 			this.active = false;
-		}	
+			remaining--;
+			System.out.println(this.name + " is elimated!");
+		}
+		
 	}
+	
 }
