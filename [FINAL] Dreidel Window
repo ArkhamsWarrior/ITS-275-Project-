@@ -3,7 +3,6 @@ package DreidelManX;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -62,7 +61,8 @@ public class Dreidel_Window extends Application{ //Include option to select numb
 		
 	}
 	
-	public void sanitize() {
+	public void sanitize() { //Makes sure that user input is valid and won't crash the game
+		//Notifies the user if there is an issue with their data or if it went through successfully
 		
 		String a, b, c;
 		a = playersTXF.getText();
@@ -93,11 +93,12 @@ public class Dreidel_Window extends Application{ //Include option to select numb
 		
 	}
 	
-	public void sendInput(int x, int y, int z) {
+	public void sendInput(int x, int y, int z) { //Sends the file name, players, and starting gelt to MainGame
 		
 		String date = LocalDate.now().toString();
 		String time = LocalTime.now().toString().replace(":", "."); //Colons are not valid for file names
 		String gameSave = date + " " + time;
+		//All files in a batch are named for the same moment so batches are easier to keep together
 		
 		try {
 			for (int i = 0; i < z; i++) {
