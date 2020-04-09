@@ -1,0 +1,15 @@
+package DreidelManX;
+
+import java.io.PrintWriter;
+
+public abstract class GeltHolder {
+
+	int gelt;
+	
+	String name;
+
+	static PrintWriter printResults;
+	
+	public abstract void writeResults();
+	
+}
