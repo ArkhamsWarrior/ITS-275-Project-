@@ -1,0 +1,45 @@
+package DreidelManX;
+
+public class Player extends GeltHolder{
+
+	boolean active;
+	static int remaining;
+	
+	public Player() {
+		this.active = true;
+	}
+	public Player(int i) {
+		this.gelt = i;
+		this.active = true;
+	}
+	
+	
+	@Override
+	public void writeResults() {
+		
+		printResults.println("Fubar");
+		
+	}
+	
+	public void writeResults(String result, Pot pot) {
+		
+		printResults.println(this.name + " lands on " + result + " and now has " + this.gelt + " gelt, " + 
+				"the Pot has " + pot.gelt);
+		
+	}
+	
+	public void winMessage() {
+		printResults.println(this.name + " has won.");
+	}
+	
+	public void update() {
+		
+		if (this.gelt <= 0) {
+			this.active = false;
+			remaining--;
+			printResults.println(this.name + " is eliminated!");
+		}
+		
+	}
+	
+}
