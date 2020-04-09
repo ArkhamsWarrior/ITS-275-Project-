@@ -1,0 +1,25 @@
+        There are some possible improvements:
+Currently, the program checks whether the game is playing whenever the checkEndGame or Update methods might be called.
+This is to prevent the game from displaying the message that a player has one multiple times or incorrectly adjusting Player.remaining;
+The check for whether the game is still playing could have been instead placed inside the Update and checkEndGame methods themselves.
+ 
+The application could receive aesthetic improvements.
+ 
+The application could let the user decide where to save the file, currently is saved to a special folder of the desktop by default.
+ 
+        Notes on changes:
+The checkEndGame and Update methods are moved around a bit as part of a fix to the issue of repeatedly stating a player has won.
+ 
+The GUI will not let the player run a game with less than one player or with negative gelt / games.
+This prevents impossible / inconceivable scenarios, and also prevents a crash upon running a game with one player and one gelt.
+ 
+Instead of writing to the console, the program writes to a text file.
+This text file is named after the moment when the application initiates the simulations and has each successive game numbered.
+   (Colons in the time have been replaced with periods, as colons are not valid for file names)
+   This is to make sure that multiple games don't get sent to the same file, each file gets there own
+   Using the createDirectories method, a folder is created to hold these files if one does not already exist.
+   The files in a batch of games are named after a single moment to help group them together more easily.
+A single PrintWriter object is used, which is a static property of the abstract class GeltHolder.
+The PrintWriter is created and closed for each game simulated.
+
+Alert boxes display when the user provides invalid values or to let them know that the operation has been successful.
