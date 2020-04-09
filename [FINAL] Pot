@@ -1,0 +1,17 @@
+package DreidelManX;
+
+public class Pot extends GeltHolder {
+
+	public Pot() {
+		this.gelt = 0;
+		this.name = "The Pot";
+	}
+	
+	@Override
+	public void writeResults() {
+		
+		printResults.println("The pot is empty! Everyone puts one in, so the pot now has " + this.gelt + " gelt");
+		
+	}
+
+}
