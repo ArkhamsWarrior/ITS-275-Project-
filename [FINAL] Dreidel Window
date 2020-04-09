@@ -1,0 +1,116 @@
+package DreidelManX;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+
+
+public class Dreidel_Window extends Application{ //Include option to select number of games to run
+
+	public static void main(String[] args) {
+    	launch(args); //Returns when the application ends
+    }
+
+	Label output;
+	TextField playersTXF, geltTXF, gamesTXF;
+	
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		
+		//Declare some labels
+		Label playersLBL = new Label("Number of Players:");
+		Label geltLBL = new Label("Number of Gelt:");
+		Label gamesLBL = new Label("Number of Games:");
+		output = new Label("Please input integers and press the button.");
+		//Declare input boxes
+		playersTXF = new TextField(); geltTXF = new TextField(); gamesTXF = new TextField();
+		//Submit button
+		Button submit = new Button("Submit");
+		submit.setPrefWidth(200);
+		submit.setOnAction(e ->
+			sanitize());
+		
+		//VBox-es
+		VBox labelsInBox = new VBox(32, playersLBL, geltLBL, gamesLBL);
+		VBox fieldsInBox = new VBox(20, playersTXF, geltTXF, gamesTXF);
+		//Hbox-es
+		HBox parallelHBOX = new HBox(40, labelsInBox, fieldsInBox);
+		parallelHBOX.setAlignment(Pos.CENTER); //Necessary to make sure stacks aren't to the left edge
+		//Main box
+		VBox mainBox = new VBox(25, parallelHBOX, submit, output);
+		mainBox.setAlignment(Pos.CENTER);
+		mainBox.setPadding(new Insets(50));
+		
+		//Create scene
+		Scene scene = new Scene(mainBox, 500, 300);
+		
+		//Set the stage
+		primaryStage.setScene(scene);
+		primaryStage.setTitle("Dreidel Man X");
+		primaryStage.show();
+		
+	}
+	
+	public void sanitize() {
+		
+		String a, b, c;
+		a = playersTXF.getText();
+		b = geltTXF.getText();
+		c = gamesTXF.getText();
+		
+		int x, y, z;
+		
+		try {
+			x = Integer.parseInt(a);
+			y = Integer.parseInt(b);
+			z = Integer.parseInt(c);
+			
+			if (x > 1 && y > 0 && z > 0) {
+				sendInput(x, y, z);
+				output.setText("Valid Input");
+			}
+			else {
+				output.setText("Invalid input");
+				alertBox.display("Invalid Data", "Please make sure all values are positive \n" +
+						"and that there are multiple players.");
+			}
+			
+		}
+		catch (NumberFormatException e) {
+			output.setText("Invalid input");
+		}
+		
+	}
+	
+	public void sendInput(int x, int y, int z) {
+		
+		String date = LocalDate.now().toString();
+		String time = LocalTime.now().toString().replace(":", "."); //Colons are not valid for file names
+		String gameSave = date + " " + time;
+		
+		try {
+			for (int i = 0; i < z; i++) {
+				MainGame.main(x, y, gameSave + " (" + (i+1) + ")");
+			}
+			alertBox.display("Success!", "Date has been generated and \nsaved to a folder on your desktop.");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			alertBox.display("Error", "Something went wrong \nduring simulation.");
+		}
+		
+		
+	}
+	
+}
