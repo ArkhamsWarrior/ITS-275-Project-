@@ -1,0 +1,186 @@
+package DreidelManX;
+
+import java.util.Random;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.FileWriter;
+import java.io.IOException;
+
+/* Dreidel Rules:
+ * 
+ * Each player starts with a certain number of coins, called "gelt." These may be chocolates,
+ * pennies, pieces of lint, other dreidels, etc.
+ * 
+ * When a player reaches 0 gelt, they are out of the game and do nothing for the rest of
+ * 
+ * Whenever the pot is empty, every player still in the game puts one gelt into the pot.
+ * 
+ * At the start of the game, the "pot" is empty, so every player puts one in to start.
+ * 
+ * During their turn, each player spins a four-sided top called a dreidel.
+ * Each side has a different letter of the Hebrew abjad on it, which tells the player what to do
+ * 
+ * Shin: The player puts one gelt in the pot
+ * Hey: The player takes half the gelt in the pot
+ * Gimel: The player takes all the gelt in the pot, this means everyone has to put a gelt in afterwards
+ * Nun: The player neither takes nor loses any turns.
+ * 
+ * Dreidel is a terribly dull game which can easily last for hundreds of rounds.
+ * It's a "No Skill" game, meaning that there is no actual decision making involved, which is very boring.
+ * However, it is an object of some mathematical interest.
+ * This program provides a way to get data on dreidel games without the suffering of actually playing them.
+ */
+
+public class MainGame {
+
+	static Random rng = new Random();
+	static Pot pot;
+	static boolean playing;
+	
+	static Player[] players;
+	static int roundNum;
+	
+	
+	public static void main(int plyrs, int glt, String gameSave) throws IOException{
+		
+		//Needed for Printing
+		String file_Name = System.getProperty("user.home") + "/Desktop/Dreidel";
+		Files.createDirectories(Paths.get(file_Name));
+		FileWriter write = new FileWriter(file_Name + "/" + gameSave + ".txt", true);
+		GeltHolder.printResults = new PrintWriter(write);
+		
+		///SETTING UP GAME PROPERTIES
+		int numPlayers = plyrs;
+		int startGelt = glt;
+		playing = true;
+		Player.remaining = numPlayers;
+		players = new Player[numPlayers];
+		pot = new Pot();
+
+		for (int i = 0; i < players.length; i++) {
+			players[i] = new Player(startGelt);
+			players[i].name = "Player " + (i + 1);
+		}
+		
+		anteUp();
+		
+		roundNum = 0;
+		
+		//ROLLING + SIMULATING GAME
+		do {
+			gameRound();
+		} while (playing);
+		
+		GeltHolder.printResults.close(); //Very important to prevent memory leaks
+		
+	}
+	
+	public static void test() {
+		System.out.println(Player.remaining);
+		Player.remaining--;
+		System.out.println(Player.remaining);
+	}
+	
+	@SuppressWarnings("static-access") //Very important
+	public static void gameRound() {
+	
+		pot.printResults.println(""); roundNum++; //Divides and labels separate rounds
+		pot.printResults.println("ROUND " + roundNum);
+		
+		for (int i = 0; i < players.length; i++) { //For each player
+			
+			if (players[i].active && playing == true) {
+				spinPlayer(players[i]); //Spin
+				players[i].update(); checkEndGame();
+			}
+						
+			if (pot.gelt <= 0 && playing == true) { //Ante up if pot is empty
+				anteUp();
+			} //Updating and checking end game is done in Ante Up method
+		}
+		
+	}
+	
+	public static void spinPlayer(Player p) { //Determines which "face" of the "dreidel" a player "lands" on
+		
+		int roll = rng.nextInt(4) + 1;
+		String result = "SHIN";
+		
+		switch (roll) {
+			case 1:
+				result = "SHIN"; break;
+			case 2:
+				result = "HEY"; break;
+			case 3:
+				result = "GIMEL"; break;
+			case 4:
+				result = "NUN"; break;
+		}
+		
+		switch (result) {
+			case "SHIN":
+				p.gelt--; pot.gelt++; //Shin, shin, put one in!
+				break;
+			case "HEY":
+				p.gelt += Math.floorDiv(pot.gelt, 2); //Hey, get half the gelt in the pot (rounded down)
+				pot.gelt -= Math.floorDiv(pot.gelt, 2); break;
+			case "GIMEL":
+				p.gelt += pot.gelt; //Gimel, get ALL the gelt in the pot
+				pot.gelt = 0; break;
+			case "NUN": break;
+				//Nun, nothing happens
+		}
+		
+		p.writeResults(result, pot);
+		
+	}
+	
+	public static void anteUp() { //For each player, check if active. If active, drop a coin.
+		for (int i = 0; i < players.length; i++)
+		{
+			if (players[i].active && playing == true)
+			{
+				players[i].gelt--;
+				pot.gelt++;
+			}
+			
+		}
+		
+		pot.writeResults();
+		
+		for (int i = 0; i < players.length; i++)//Update active status of each player
+		{
+			if (players[i].active && playing == true)
+			{
+				players[i].update(); checkEndGame();
+			}
+		}
+		
+
+		
+	}
+	
+	public static void checkEndGame() { //Determines if the game should end
+		
+		if (Player.remaining == 1) {
+			endGame();
+		}
+		
+	}
+	
+	public static void endGame() { //Ends the game, stops looping and says who won
+		
+		for (int i=0; i < players.length; i++)
+	    {
+	        if (players[i].active)
+	        {
+	        	players[i].winMessage();
+	        }
+	    }
+		
+		playing = false;
+		
+	}
+	
+}
